@@ -28,12 +28,18 @@ class _HomeState extends State<Home> {
     }
   ];
 
-  // Function to open the link
   Future<void> _launchURL(String url) async {
     final Uri uri = Uri.parse(url);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       throw 'Could not launch $url';
     }
+  }
+
+  // Logout function
+  void _handleLogout() {
+    // Assuming you're using Supabase for auth from your previous question
+    // Add your logout logic here
+    Navigator.pushReplacementNamed(context, '/login');
   }
 
   @override
@@ -45,7 +51,6 @@ class _HomeState extends State<Home> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Greeting Row
             Row(
               children: [
                 Image.asset(
@@ -64,20 +69,37 @@ class _HomeState extends State<Home> {
                   ),
                 ),
                 const Spacer(),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(30),
-                  child: Image.asset(
-                    "images/try.png",
-                    width: 50,
-                    height: 50,
-                    fit: BoxFit.cover,
+                PopupMenuButton<String>(
+                  onSelected: (value) {
+                    if (value == 'logout') {
+                      _handleLogout();
+                    }
+                  },
+                  itemBuilder: (BuildContext context) => [
+                    const PopupMenuItem<String>(
+                      value: 'logout',
+                      child: Row(
+                        children: [
+                          Icon(Icons.logout, color: Colors.red),
+                          SizedBox(width: 8),
+                          Text('Logout'),
+                        ],
+                      ),
+                    ),
+                  ],
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(30),
+                    child: Image.asset(
+                      "images/try.png",
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 10),
-
-            // Welcome Text
             const Text(
               "Welcome to,",
               style: TextStyle(
@@ -86,8 +108,6 @@ class _HomeState extends State<Home> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-
-            // "I Student" Text
             Row(
               children: [
                 const Text(
@@ -109,13 +129,11 @@ class _HomeState extends State<Home> {
               ],
             ),
             const SizedBox(height: 10),
-
-            // Carousel Slider with Clickable Images
             Center(
               child: CarouselSlider(
                 items: images.map((image) {
                   return GestureDetector(
-                    onTap: () => _launchURL(image["link"]!), // Open the link when clicked
+                    onTap: () => _launchURL(image["link"]!),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
                       child: Image.asset(
@@ -136,10 +154,7 @@ class _HomeState extends State<Home> {
                 ),
               ),
             ),
-
             const SizedBox(height: 30),
-
-            // Row of Three Buttons
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -153,7 +168,7 @@ class _HomeState extends State<Home> {
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 15),
-                      backgroundColor: Colors.orange, // Adjust button color
+                      backgroundColor: Colors.orange,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),

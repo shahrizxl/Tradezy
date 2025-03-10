@@ -1,24 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:istudent/pages/home.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:istudent/auth/login_page.dart';
+import 'package:istudent/auth/signup_page.dart';
 import 'package:istudent/pages/bottomnav.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  await Supabase.initialize(
+    url: 'https://opgovzqatyktfntubhey.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9wZ292enFhdHlrdGZudHViaGV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE1ODk5NjksImV4cCI6MjA1NzE2NTk2OX0.wgdDx-AIQMqHWZMUmXMDEhNzl3Bl-F6w5V5TuQRUGHo',
+  );
+  
+  runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+final supabase = Supabase.instance.client;
 
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'iStudent',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const BottomNav(), // Using Bottom Navigation for structured navigation
+      title: 'Flutter Supabase Auth',
+      initialRoute: supabase.auth.currentSession != null ? '/home' : '/login',
+      routes: {
+        '/login': (context) => LoginPage(),
+        '/signup': (context) => SignupPage(),
+        '/home': (context) => BottomNav(),
+      },
     );
   }
 }

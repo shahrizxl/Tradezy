@@ -32,6 +32,7 @@ dependencies:
     sdk: flutter
   carousel_slider: ^5.0.0
   curved_navigation_bar: 
+  supabase_flutter:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
