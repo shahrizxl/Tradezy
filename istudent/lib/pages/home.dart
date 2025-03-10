@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:istudent/pages/money.dart';
 import 'package:istudent/pages/edu.dart';
@@ -13,6 +14,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final supabase = Supabase.instance.client;
+  String userName = "User"; // Default value
   final List<Map<String, String>> images = [
     {
       "url": "images/barcamp.png",
@@ -42,6 +45,35 @@ class _HomeState extends State<Home> {
     Navigator.pushReplacementNamed(context, '/login');
   }
 
+    @override
+  void initState() {
+    super.initState();
+    fetchUserName();
+  }
+
+    Future<void> fetchUserName() async {
+    try {
+      // Get current user ID
+      final userId = supabase.auth.currentUser?.id;
+      if (userId == null) return;
+
+      // Fetch user profile from your 'profiles' table
+      final data = await supabase
+          .from('profiles')
+          .select('name')
+          .eq('id', userId)
+          .single();
+
+      if (mounted) {
+        setState(() {
+          userName = data['name'] ?? "User";
+        });
+      }
+    } catch (e) {
+      print('Error fetching user name: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,8 +92,8 @@ class _HomeState extends State<Home> {
                   fit: BoxFit.cover,
                 ),
                 const SizedBox(width: 10),
-                const Text(
-                  "Hello, Shahrizal",
+                 Text(
+                  "Hello, $userName",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 22,

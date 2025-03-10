@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Supabase Auth',
-      initialRoute: supabase.auth.currentSession != null ? '/home' : '/login',
+      initialRoute : '/login',
       routes: {
         '/login': (context) => LoginPage(),
         '/signup': (context) => SignupPage(),
