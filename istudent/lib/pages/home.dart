@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:istudent/pages/money.dart';
+import 'package:istudent/pages/edu.dart';
+import 'package:istudent/pages/health.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -61,16 +64,13 @@ class _HomeState extends State<Home> {
                   ),
                 ),
                 const Spacer(),
-                Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(60),
-                    child: Image.asset(
-                      "images/try.png",
-                      width: 60,
-                      height: 60,
-                      fit: BoxFit.cover,
-                    ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(30),
+                  child: Image.asset(
+                    "images/try.png",
+                    width: 50,
+                    height: 50,
+                    fit: BoxFit.cover,
                   ),
                 ),
               ],
@@ -114,27 +114,17 @@ class _HomeState extends State<Home> {
             Center(
               child: CarouselSlider(
                 items: images.map((image) {
-                  return Builder(
-                    builder: (BuildContext context) {
-                      return GestureDetector(
-                        onTap: () => _launchURL(image["link"]!), // Open the link when clicked
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.85,
-                          margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8.0),
-                            child: Image.asset(
-                              image["url"]!,
-                              fit: BoxFit.contain,
-                              height: 220,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
+                  return GestureDetector(
+                    onTap: () => _launchURL(image["link"]!), // Open the link when clicked
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Image.asset(
+                        image["url"]!,
+                        fit: BoxFit.contain,
+                        width: MediaQuery.of(context).size.width * 0.85,
+                        height: 220,
+                      ),
+                    ),
                   );
                 }).toList(),
                 options: CarouselOptions(
@@ -145,6 +135,71 @@ class _HomeState extends State<Home> {
                   autoPlayAnimationDuration: const Duration(milliseconds: 800),
                 ),
               ),
+            ),
+
+            const SizedBox(height: 30),
+
+            // Row of Three Buttons
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const EduPage()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      backgroundColor: Colors.orange, // Adjust button color
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text("Education"),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const MoneyPage()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      backgroundColor: Colors.green,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text("Finance"),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const HealthPage()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      backgroundColor: Colors.blue,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text("Health"),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
