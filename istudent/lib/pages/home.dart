@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -9,11 +10,28 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final List<String> imageLinks = [
-    "images/barcamp.png",
-    "images/umhack.jpeg",
-    "images/usmhack.jpeg"
+  final List<Map<String, String>> images = [
+    {
+      "url": "images/barcamp.png",
+      "link": "https://www.instagram.com/barcamp_cyberjaya/"
+    },
+    {
+      "url": "images/umhack.jpeg",
+      "link": "https://www.instagram.com/umhackathon/"
+    },
+    {
+      "url": "images/usmhack.jpeg",
+      "link": "https://www.instagram.com/vhack.usm/"
+    }
   ];
+
+  // Function to open the link
+  Future<void> _launchURL(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      throw 'Could not launch $url';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +42,7 @@ class _HomeState extends State<Home> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // First Row: Greeting and Profile Picture
+            // Greeting Row
             Row(
               children: [
                 Image.asset(
@@ -59,7 +77,7 @@ class _HomeState extends State<Home> {
             ),
             const SizedBox(height: 10),
 
-            // "Welcome to," Text
+            // Welcome Text
             const Text(
               "Welcome to,",
               style: TextStyle(
@@ -69,7 +87,7 @@ class _HomeState extends State<Home> {
               ),
             ),
 
-            // Second Row: "I Student" Text
+            // "I Student" Text
             Row(
               children: [
                 const Text(
@@ -92,24 +110,27 @@ class _HomeState extends State<Home> {
             ),
             const SizedBox(height: 10),
 
-            // Carousel Slider
+            // Carousel Slider with Clickable Images
             Center(
               child: CarouselSlider(
-                items: imageLinks.map((url) {
+                items: images.map((image) {
                   return Builder(
                     builder: (BuildContext context) {
-                      return Container(
-                        width: MediaQuery.of(context).size.width * 0.85, // Increased to 85% of screen width
-                        margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: Image.asset(
-                            url,
-                            fit: BoxFit.contain, // Changed to contain
-                            height: 220, // Increased height
+                      return GestureDetector(
+                        onTap: () => _launchURL(image["link"]!), // Open the link when clicked
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.85,
+                          margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: Image.asset(
+                              image["url"]!,
+                              fit: BoxFit.contain,
+                              height: 220,
+                            ),
                           ),
                         ),
                       );
@@ -117,10 +138,10 @@ class _HomeState extends State<Home> {
                   );
                 }).toList(),
                 options: CarouselOptions(
-                  height: 140, // Increased carousel height
+                  height: 140,
                   autoPlay: true,
                   enlargeCenterPage: true,
-                  viewportFraction: 0.85, // Match the new container width
+                  viewportFraction: 0.85,
                   autoPlayAnimationDuration: const Duration(milliseconds: 800),
                 ),
               ),
