@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
-
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -10,11 +9,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final List<String> imagelink = [
-    "images/barcamp.png", 
-    "images/umhack.jpeg", 
+  final List<String> imageLinks = [
+    "images/barcamp.png",
+    "images/umhack.jpeg",
     "images/usmhack.jpeg"
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +22,7 @@ class _HomeState extends State<Home> {
       body: Container(
         margin: const EdgeInsets.only(top: 30, left: 20, right: 20),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start, // Align text to the left
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // First Row: Greeting and Profile Picture
             Row(
@@ -42,7 +42,7 @@ class _HomeState extends State<Home> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const Spacer(), // Add space between text and image
+                const Spacer(),
                 Padding(
                   padding: const EdgeInsets.only(right: 10),
                   child: ClipRRect(
@@ -57,7 +57,7 @@ class _HomeState extends State<Home> {
                 ),
               ],
             ),
-            const SizedBox(height: 10), // Add spacing between rows
+            const SizedBox(height: 10),
 
             // "Welcome to," Text
             const Text(
@@ -69,7 +69,7 @@ class _HomeState extends State<Home> {
               ),
             ),
 
-            // Second Row: "I Student" Text and Logo
+            // Second Row: "I Student" Text
             Row(
               children: [
                 const Text(
@@ -88,12 +88,14 @@ class _HomeState extends State<Home> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-
               ],
             ),
+            const SizedBox(height: 10),
+
+            // Carousel Slider
             Center(
               child: CarouselSlider(
-                items: imagelink.map((url) {
+                items: imageLinks.map((url) {
                   return Builder(
                     builder: (BuildContext context) {
                       return Container(
@@ -115,14 +117,14 @@ class _HomeState extends State<Home> {
                   );
                 }).toList(),
                 options: CarouselOptions(
-                  height: 240, // Increased carousel height
+                  height: 140, // Increased carousel height
                   autoPlay: true,
                   enlargeCenterPage: true,
                   viewportFraction: 0.85, // Match the new container width
                   autoPlayAnimationDuration: const Duration(milliseconds: 800),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
