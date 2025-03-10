@@ -16,6 +16,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final supabase = Supabase.instance.client;
   String userName = "User"; // Default value
+  String userGender = "male";
   final List<Map<String, String>> images = [
     {
       "url": "images/barcamp.png",
@@ -60,19 +61,22 @@ class _HomeState extends State<Home> {
       // Fetch user profile from your 'profiles' table
       final data = await supabase
           .from('profiles')
-          .select('name')
+          .select('name,gender')
           .eq('id', userId)
           .single();
 
       if (mounted) {
         setState(() {
           userName = data['name'] ?? "User";
+          userGender = data['gender'] ?? "male";
         });
       }
     } catch (e) {
       print('Error fetching user name: $e');
     }
   }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +126,7 @@ class _HomeState extends State<Home> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(30),
                     child: Image.asset(
-                      "images/try.png",
+                      userGender.toLowerCase() == "female" ? "images/female.png" : "images/male.png",
                       width: 50,
                       height: 50,
                       fit: BoxFit.cover,
