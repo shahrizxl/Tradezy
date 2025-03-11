@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:istudent/main.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -8,12 +10,136 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  final _formKey = GlobalKey<FormState>();
+  late User? _user;
+  Map<String, dynamic>? _userData;
+
+  final List<String> _institutionOptions = [
+    'Preschool',
+    'School',
+    'University'
+  ];
+
+  final List<String> _genderOptions = [
+    'Male',
+    'Female'
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    _user = supabase.auth.currentUser;
+    if (_user != null) {
+      final response = await supabase.from('profiles').select().eq('id', _user!.id).single();
+      setState(() {
+        _userData = response;
+      });
+    }
+  }
+
+  Future<void> _updateProfile() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        await supabase.from('profiles').update({
+          'name': _userData!['name'],
+          'phone': _userData!['phone'],
+          'institution': _userData!['institution'],
+          'gender': _userData!['gender'],
+        }).eq('id', _user!.id);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Profile updated successfully!')),
+        );
+      } catch (error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error updating profile: $error')),
+        );
+      }
+    }
+  }
+
+  Future<void> _logout() async {
+    await supabase.auth.signOut();
+    Navigator.pushReplacementNamed(context, '/login');
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text("Profile Page"),
-      ),
+    return Scaffold(
+      appBar: AppBar(title: const Text('Profile')),
+      body: _userData == null
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      initialValue: _userData!['name'],
+                      decoration: const InputDecoration(labelText: 'Name'),
+                      onChanged: (value) => _userData!['name'] = value,
+                    ),
+                    TextFormField(
+                      initialValue: _userData!['email'],
+                      decoration: const InputDecoration(labelText: 'Email'),
+                      readOnly: true,
+                    ),
+                    TextFormField(
+                      initialValue: _userData!['phone'],
+                      decoration: const InputDecoration(labelText: 'Phone'),
+                      onChanged: (value) => _userData!['phone'] = value,
+                    ),
+                    DropdownButtonFormField<String>(
+                      decoration: const InputDecoration(labelText: 'Institution'),
+                      value: _userData!['institution'],
+                      items: _institutionOptions.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          _userData!['institution'] = newValue;
+                        });
+                      },
+                    ),
+                    DropdownButtonFormField<String>(
+                      decoration: const InputDecoration(labelText: 'Gender'),
+                      value: _userData!['gender'],
+                      items: _genderOptions.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          _userData!['gender'] = newValue;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: _updateProfile,
+                      child: const Text('Update Profile'),
+                    ),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: _logout,
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                      child: const Text('Logout'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 }
