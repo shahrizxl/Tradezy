@@ -15,7 +15,7 @@ class _AiState extends State<Ai> {
   final gemini = Gemini.instance;
   List<ChatMessage> messages = [];
   final currentUser = ChatUser(id: "0", firstName: "User");
-  final geminiUser = ChatUser(id: "1", firstName: "Gemini");
+  final geminiUser = ChatUser(id: "1", firstName: "Istudent AI");
 
   @override
   Widget build(BuildContext context) {
