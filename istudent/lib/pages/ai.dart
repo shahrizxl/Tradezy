@@ -21,7 +21,7 @@ class _AiState extends State<Ai> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text('AI Chat'),
-        backgroundColor: Colors.black,
+        backgroundColor: Color.fromARGB(255, 213, 128, 0),
       ),
       body: DashChat(
         currentUser: currentUser,
