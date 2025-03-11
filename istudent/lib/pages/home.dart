@@ -5,6 +5,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:istudent/pages/money.dart';
 import 'package:istudent/pages/edu.dart';
 import 'package:istudent/pages/health.dart';
+import 'package:istudent/pages/profile.dart';
+
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -109,9 +111,24 @@ class _HomeState extends State<Home> {
                   onSelected: (value) {
                     if (value == 'logout') {
                       _handleLogout();
+                    } else if (value == 'profile') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const Profile()),
+                      );
                     }
                   },
                   itemBuilder: (BuildContext context) => [
+                    const PopupMenuItem<String>(
+                      value: 'profile',
+                      child: Row(
+                        children: [
+                          Icon(Icons.person, color: Colors.blue),
+                          SizedBox(width: 8),
+                          Text('Profile'),
+                        ],
+                      ),
+                    ),
                     const PopupMenuItem<String>(
                       value: 'logout',
                       child: Row(
@@ -123,13 +140,30 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                   ],
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(30),
-                    child: Image.asset(
-                      userGender.toLowerCase() == "female" ? "images/female.png" : "images/male.png",
-                      width: 50,
-                      height: 50,
-                      fit: BoxFit.cover,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const Profile()),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: const Color.fromARGB(255, 213, 128, 0),
+                          width: 2.0,
+                        ),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(30),
+                        child: Image.asset(
+                          userGender.toLowerCase() == "female" ? "images/female.png" : "images/male.png",
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -218,7 +252,7 @@ class _HomeState extends State<Home> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const MoneyPage()),
+                        MaterialPageRoute(builder: (context) => FinanceApp()),
                       );
                     },
                     style: ElevatedButton.styleFrom(

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:istudent/pages/home.dart';
-import 'package:istudent/pages/profile.dart';
 import 'package:istudent/pages/ai.dart';
+import 'package:istudent/pages/edu.dart';
+import 'package:istudent/pages/health.dart';
+import 'package:istudent/pages/money.dart';
 
 class BottomNav extends StatefulWidget {
   const BottomNav({super.key});
@@ -17,7 +19,9 @@ class _BottomNavState extends State<BottomNav> {
   final List<Widget> pages = [
     const Home(),
     const Ai(),
-    const Profile(),
+    FinanceApp(),
+    const HealthPage(),
+    const EduPage(),
   ];
 
   @override
@@ -31,7 +35,9 @@ class _BottomNavState extends State<BottomNav> {
         items: const [
           Icon(Icons.home, size: 30),
           Icon(Icons.chat, size: 30),
-          Icon(Icons.person, size: 30),
+          Icon(Icons.money, size: 30),
+          Icon(Icons.local_hospital, size: 30),
+          Icon(Icons.school, size: 30),
         ],
         onTap: (index) {
           setState(() {

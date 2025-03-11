@@ -1,6 +1,8 @@
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:istudent/pages/home.dart';
+import 'package:istudent/pages/bottomnav.dart';
 
 class Ai extends StatefulWidget {
   const Ai({super.key});
@@ -20,9 +22,17 @@ class _AiState extends State<Ai> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('AI Chat'),
+        title: const Text('AI Chat' , style: TextStyle(color: Colors.black)),
         backgroundColor: Color.fromARGB(255, 213, 128, 0),
+                leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => BottomNav()));
+          },
       ),
+        
+      ),
+      backgroundColor: Colors.black,
       body: DashChat(
         currentUser: currentUser,
         onSend: _handleSendMessage,
@@ -30,7 +40,7 @@ class _AiState extends State<Ai> {
         messageOptions: const MessageOptions(
           currentUserContainerColor: Colors.blue,
           containerColor: Colors.grey,
-          textColor: Colors.white,
+          textColor: Colors.black,
         ),
       ),
     );

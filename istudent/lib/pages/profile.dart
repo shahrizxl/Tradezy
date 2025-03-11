@@ -70,7 +70,8 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Profile')),
+      appBar: AppBar(title: const Text('Profile', style: TextStyle(color: Colors.black)), backgroundColor: Color.fromARGB(255, 213, 128, 0)),
+      backgroundColor: Colors.black,
       body: _userData == null
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -82,26 +83,30 @@ class _ProfileState extends State<Profile> {
                     const SizedBox(height: 20),
                     TextFormField(
                       initialValue: _userData!['name'],
-                      decoration: const InputDecoration(labelText: 'Name'),
+                      decoration: const InputDecoration(labelText: 'Name', labelStyle: TextStyle(color: Colors.white)),
+                      style: const TextStyle(color: Colors.white),
                       onChanged: (value) => _userData!['name'] = value,
                     ),
                     TextFormField(
                       initialValue: _userData!['email'],
-                      decoration: const InputDecoration(labelText: 'Email'),
+                      decoration: const InputDecoration(labelText: 'Email', labelStyle: TextStyle(color: Colors.white)),
+                      style: const TextStyle(color: Colors.white),
                       readOnly: true,
                     ),
                     TextFormField(
                       initialValue: _userData!['phone'],
-                      decoration: const InputDecoration(labelText: 'Phone'),
+                      decoration: const InputDecoration(labelText: 'Phone', labelStyle: TextStyle(color: Colors.white)),
+                      style: const TextStyle(color: Colors.white),
                       onChanged: (value) => _userData!['phone'] = value,
                     ),
                     DropdownButtonFormField<String>(
-                      decoration: const InputDecoration(labelText: 'Institution'),
+                      decoration: const InputDecoration(labelText: 'Institution', labelStyle: TextStyle(color: Colors.white)),
                       value: _userData!['institution'],
+                      dropdownColor: Colors.black,
                       items: _institutionOptions.map((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
-                          child: Text(value),
+                          child: Text(value, style: const TextStyle(color: Colors.white)),
                         );
                       }).toList(),
                       onChanged: (String? newValue) {
@@ -111,12 +116,13 @@ class _ProfileState extends State<Profile> {
                       },
                     ),
                     DropdownButtonFormField<String>(
-                      decoration: const InputDecoration(labelText: 'Gender'),
+                      decoration: const InputDecoration(labelText: 'Gender', labelStyle: TextStyle(color: Colors.white)),
                       value: _userData!['gender'],
+                      dropdownColor: Colors.black,
                       items: _genderOptions.map((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
-                          child: Text(value),
+                          child: Text(value, style: const TextStyle(color: Colors.white)),
                         );
                       }).toList(),
                       onChanged: (String? newValue) {

@@ -31,7 +31,7 @@ class _SignupPageState extends State<SignupPage> {
     if (!_formKey.currentState!.validate()) {
       return; // Stop if form validation fails
     }
-
+    
     try {
       // Sign up user with Supabase auth
       final response = await supabase.auth.signUp(
@@ -44,7 +44,7 @@ class _SignupPageState extends State<SignupPage> {
           'phone': _phoneController.text.trim(),
         },
       );
-
+      
       // Insert additional user data into profiles table, including email
       await supabase.from('profiles').insert({
         'id': response.user?.id, // Link to auth user
@@ -54,7 +54,7 @@ class _SignupPageState extends State<SignupPage> {
         'gender': _selectedGender,
         'phone': _phoneController.text.trim(),
       });
-
+      
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Account successfully created!')),
@@ -70,19 +70,68 @@ class _SignupPageState extends State<SignupPage> {
     }
   }
 
+  // Input decoration theme for consistent styling
+  InputDecoration _inputDecoration(String label) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: const TextStyle(color: Colors.grey),
+      filled: true,
+      fillColor: Colors.grey[900],
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.blue, width: 2),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.red, width: 2),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.red, width: 2),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Sign Up')),
+      appBar: AppBar(
+        title: const Text(
+          'Sign Up',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.black,
+        elevation: 0,
+      ),
+      backgroundColor: Colors.black,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
+              // Welcome text
+              const Padding(
+                padding: EdgeInsets.only(bottom: 24.0),
+                child: Text(
+                  'Create Your Account',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              
+              // Name field
               TextFormField(
                 controller: _nameController,
-                decoration: const InputDecoration(labelText: 'Name'),
+                decoration: _inputDecoration('Name'),
+                style: const TextStyle(color: Colors.white),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'Please enter your name';
@@ -90,10 +139,14 @@ class _SignupPageState extends State<SignupPage> {
                   return null;
                 },
               ),
+              const SizedBox(height: 16),
+              
+              // Email field
               TextFormField(
                 controller: _emailController,
-                decoration: const InputDecoration(labelText: 'Email'),
+                decoration: _inputDecoration('Email'),
                 keyboardType: TextInputType.emailAddress,
+                style: const TextStyle(color: Colors.white),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'Please enter your email';
@@ -104,10 +157,14 @@ class _SignupPageState extends State<SignupPage> {
                   return null;
                 },
               ),
+              const SizedBox(height: 16),
+              
+              // Password field
               TextFormField(
                 controller: _passwordController,
-                decoration: const InputDecoration(labelText: 'Password'),
+                decoration: _inputDecoration('Password'),
                 obscureText: true,
+                style: const TextStyle(color: Colors.white),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'Please enter your password';
@@ -118,10 +175,14 @@ class _SignupPageState extends State<SignupPage> {
                   return null;
                 },
               ),
+              const SizedBox(height: 16),
+              
+              // Phone field
               TextFormField(
                 controller: _phoneController,
-                decoration: const InputDecoration(labelText: 'Phone Number'),
+                decoration: _inputDecoration('Phone Number'),
                 keyboardType: TextInputType.phone,
+                style: const TextStyle(color: Colors.white),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'Please enter your phone number';
@@ -132,13 +193,18 @@ class _SignupPageState extends State<SignupPage> {
                   return null;
                 },
               ),
+              const SizedBox(height: 16),
+              
+              // Institution dropdown
               DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: 'Institution'),
+                decoration: _inputDecoration('Institution'),
                 value: _selectedInstitution,
+                style: const TextStyle(color: Colors.white),
+                dropdownColor: Colors.grey[900],
                 items: _institutionOptions.map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
-                    child: Text(value),
+                    child: Text(value, style: const TextStyle(color: Colors.white)),
                   );
                 }).toList(),
                 onChanged: (String? newValue) {
@@ -148,13 +214,18 @@ class _SignupPageState extends State<SignupPage> {
                 },
                 validator: (value) => value == null ? 'Please select an institution' : null,
               ),
+              const SizedBox(height: 16),
+              
+              // Gender dropdown
               DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: 'Gender'),
+                decoration: _inputDecoration('Gender'),
                 value: _selectedGender,
+                style: const TextStyle(color: Colors.white),
+                dropdownColor: Colors.grey[900],
                 items: _genderOptions.map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
-                    child: Text(value),
+                    child: Text(value, style: const TextStyle(color: Colors.white)),
                   );
                 }).toList(),
                 onChanged: (String? newValue) {
@@ -164,14 +235,35 @@ class _SignupPageState extends State<SignupPage> {
                 },
                 validator: (value) => value == null ? 'Please select a gender' : null,
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
+              
+              // Sign up button
               ElevatedButton(
                 onPressed: _signup,
-                child: const Text('Sign Up'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                  minimumSize: const Size(double.infinity, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text(
+                  'Sign Up',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
               ),
+              
+              // Login link
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Already have an account? Login'),
+                child: const Text(
+                  'Already have an account? Login',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 14,
+                  ),
+                ),
               ),
             ],
           ),
