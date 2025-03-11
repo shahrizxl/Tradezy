@@ -29,6 +29,14 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'IStudent',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.black,
+        elevation: 0,
+      ),
       backgroundColor: Colors.black,
       body: Center(
         child: Padding(
