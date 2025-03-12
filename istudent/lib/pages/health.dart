@@ -10,14 +10,9 @@ class HealthPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Health Management'),
-        backgroundColor: Color.fromARGB(255, 213, 128, 0),
-                leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => BottomNav()));
-          },
-      ),
+        title: const Text('Health Management', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.black,
+
       ),
       backgroundColor: Colors.black,
       body: const Center(child: Text("Health Page")),

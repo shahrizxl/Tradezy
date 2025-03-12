@@ -123,7 +123,7 @@ class _HomeState extends State<Home> {
                       value: 'profile',
                       child: Row(
                         children: [
-                          Icon(Icons.person, color: Colors.blue),
+                          Icon(Icons.person, color: Colors.blueAccent),
                           SizedBox(width: 8),
                           Text('Profile'),
                         ],
@@ -151,7 +151,7 @@ class _HomeState extends State<Home> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: const Color.fromARGB(255, 213, 128, 0),
+                          color: Colors.blueAccent,
                           width: 2.0,
                         ),
                       ),
@@ -191,7 +191,7 @@ class _HomeState extends State<Home> {
                 const Text(
                   "Student",
                   style: TextStyle(
-                    color: Color.fromARGB(255, 213, 128, 0),
+                    color: Colors.blueAccent,
                     fontSize: 36,
                     fontWeight: FontWeight.bold,
                   ),

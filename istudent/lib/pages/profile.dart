@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:istudent/main.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:istudent/pages/bottomnav.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -70,7 +71,16 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Profile', style: TextStyle(color: Colors.black)), backgroundColor: Color.fromARGB(255, 213, 128, 0)),
+      appBar: AppBar(
+        title: const Text('Profile', style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.blueAccent,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => BottomNav()));
+          },
+      ),
+      ),
       backgroundColor: Colors.black,
       body: _userData == null
           ? const Center(child: CircularProgressIndicator())

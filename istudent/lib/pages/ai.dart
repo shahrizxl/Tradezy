@@ -22,14 +22,9 @@ class _AiState extends State<Ai> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('AI Chat' , style: TextStyle(color: Colors.black)),
-        backgroundColor: Color.fromARGB(255, 213, 128, 0),
-                leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => BottomNav()));
-          },
-      ),
+        title: const Text('AI Chat' , style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.black,
+
         
       ),
       backgroundColor: Colors.black,
@@ -38,7 +33,7 @@ class _AiState extends State<Ai> {
         onSend: _handleSendMessage,
         messages: messages,
         messageOptions: const MessageOptions(
-          currentUserContainerColor: Colors.blue,
+          currentUserContainerColor: Colors.blueAccent,
           containerColor: Colors.grey,
           textColor: Colors.black,
         ),

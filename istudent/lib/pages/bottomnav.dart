@@ -30,7 +30,7 @@ class _BottomNavState extends State<BottomNav> {
       body: pages[_currentIndex],
       bottomNavigationBar: CurvedNavigationBar(
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        color: Color.fromARGB(255, 213, 128, 0),
+        color: Colors.blueAccent,
         animationDuration: const Duration(milliseconds: 500),
         items: const [
           Icon(Icons.home, size: 30),
