@@ -7,7 +7,6 @@ import 'package:istudent/pages/edu.dart';
 import 'package:istudent/pages/health.dart';
 import 'package:istudent/pages/profile.dart';
 
-
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -19,19 +18,14 @@ class _HomeState extends State<Home> {
   final supabase = Supabase.instance.client;
   String userName = "User"; // Default value
   String userGender = "male";
+  double? _totalMoney; // Income - Expenses
+  bool _isLoading = true;
+  String? _errorMessage;
+
   final List<Map<String, String>> images = [
-    {
-      "url": "images/barcamp.png",
-      "link": "https://www.instagram.com/barcamp_cyberjaya/"
-    },
-    {
-      "url": "images/umhack.jpeg",
-      "link": "https://www.instagram.com/umhackathon/"
-    },
-    {
-      "url": "images/usmhack.jpeg",
-      "link": "https://www.instagram.com/vhack.usm/"
-    }
+    {"url": "images/barcamp.png", "link": "https://www.instagram.com/barcamp_cyberjaya/"},
+    {"url": "images/umhack.jpeg", "link": "https://www.instagram.com/umhackathon/"},
+    {"url": "images/usmhack.jpeg", "link": "https://www.instagram.com/vhack.usm/"},
   ];
 
   Future<void> _launchURL(String url) async {
@@ -41,26 +35,22 @@ class _HomeState extends State<Home> {
     }
   }
 
-  // Logout function
   void _handleLogout() {
-    // Assuming you're using Supabase for auth from your previous question
-    // Add your logout logic here
     Navigator.pushReplacementNamed(context, '/login');
   }
 
-    @override
+  @override
   void initState() {
     super.initState();
     fetchUserName();
+    fetchTotalMoney();
   }
 
-    Future<void> fetchUserName() async {
+  Future<void> fetchUserName() async {
     try {
-      // Get current user ID
       final userId = supabase.auth.currentUser?.id;
       if (userId == null) return;
 
-      // Fetch user profile from your 'profiles' table
       final data = await supabase
           .from('profiles')
           .select('name,gender')
@@ -78,7 +68,58 @@ class _HomeState extends State<Home> {
     }
   }
 
-  
+  Future<void> fetchTotalMoney() async {
+    try {
+      final user = supabase.auth.currentUser;
+      if (user == null) {
+        throw Exception('You must be logged in to fetch money data.');
+      }
+
+      // Fetch total income from 'incomes' table
+      final incomeResponse = await supabase
+          .from('incomes')
+          .select('amount')
+          .eq('user_id', user.id);
+      final incomes = (incomeResponse as List<dynamic>)
+          .map((item) => (item['amount'] as num).toDouble())
+          .toList();
+
+      // Fetch transactions (Income and Expense)
+      final transactionResponse = await supabase
+          .from('transactions')
+          .select('amount, type')
+          .eq('user_id', user.id);
+      final transactions = transactionResponse as List<Map<String, dynamic>>;
+
+      double totalIncome = incomes.fold(0, (sum, amount) => sum + amount);
+      double transactionIncome = transactions
+          .where((t) => t['type'] == 'Income')
+          .fold(0, (sum, t) => sum + (t['amount'] as num).toDouble());
+      double totalExpense = transactions
+          .where((t) => t['type'] == 'Expense')
+          .fold(0, (sum, t) => sum + (t['amount'] as num).toDouble());
+
+      setState(() {
+        _totalMoney = (totalIncome + transactionIncome) - totalExpense;
+        _isLoading = false;
+      });
+    } catch (error) {
+      setState(() {
+        _errorMessage = 'Failed to fetch money data: $error';
+        _isLoading = false;
+      });
+      print('Error fetching total money: $error');
+    }
+  }
+
+  String _getMoneyCondition() {
+    if (_totalMoney == null) return "Loading...";
+    return _totalMoney! > 100 ? "Good" : "Bad";
+  }
+
+  // Placeholder conditions for Health and Education (extend with real logic if needed)
+  String _getHealthCondition() => "Good"; // Static for now
+  String _getEducationCondition() => "Good"; // Static for now
 
   @override
   Widget build(BuildContext context) {
@@ -98,9 +139,9 @@ class _HomeState extends State<Home> {
                   fit: BoxFit.cover,
                 ),
                 const SizedBox(width: 10),
-                 Text(
+                Text(
                   "Hello, $userName",
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
@@ -150,10 +191,7 @@ class _HomeState extends State<Home> {
                     child: Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.blueAccent,
-                          width: 2.0,
-                        ),
+                        border: Border.all(color: Colors.blueAccent, width: 2.0),
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(30),
@@ -225,6 +263,57 @@ class _HomeState extends State<Home> {
               ),
             ),
             const SizedBox(height: 30),
+            // Three vertical boxes for Money, Health, Education
+            Expanded(
+              child: Column(
+                children: [
+                  _buildConditionBox("Money", _getMoneyCondition(), Colors.blueAccent),
+                  const SizedBox(height: 10),
+                  _buildConditionBox("Health", _getHealthCondition(), Colors.green),
+                  const SizedBox(height: 10),
+                  _buildConditionBox("Education", _getEducationCondition(), Colors.orange),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildConditionBox(String title, String condition, Color color) {
+    return GestureDetector(
+      onTap: () {
+        if (title == "Money") {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+        } else if (title == "Health") {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => HealthPage()));
+        } else if (title == "Education") {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => EduPage()));
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.grey[900],
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: color, width: 2),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              condition,
+              style: TextStyle(
+                color: condition == "Good" ? Colors.green : Colors.red,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ],
         ),
       ),

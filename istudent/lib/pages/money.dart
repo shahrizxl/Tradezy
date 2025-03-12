@@ -45,7 +45,6 @@ class _FinanceAppState extends State<FinanceApp> {
 }
 
 
-
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -117,13 +116,34 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  // Calculate total income, total expense, and net (income - expense)
+  Map<String, double> _calculateTotals() {
+    double totalIncome = 0.0;
+    double totalExpense = 0.0;
+
+    for (var transaction in _filteredTransactions) {
+      if (transaction['type'] == 'Income') {
+        totalIncome += transaction['amount'] as double;
+      } else if (transaction['type'] == 'Expense') {
+        totalExpense += transaction['amount'] as double;
+      }
+    }
+
+    return {
+      'income': totalIncome,
+      'expense': totalExpense,
+      'net': totalIncome - totalExpense,
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
+    final totals = _calculateTotals(); // Calculate totals for display
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text('Finance Tracker', style: TextStyle(color: Colors.white)),
-
       ),
       body: Column(
         children: [
@@ -159,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     : _filteredTransactions.isEmpty
                         ? const Center(child: Text('No transactions for this category.', style: TextStyle(fontSize: 18)))
                         : SingleChildScrollView(
-                            scrollDirection: Axis.horizontal, // Allow horizontal scrolling for wide tables
+                            scrollDirection: Axis.horizontal,
                             child: DataTable(
                               columns: const [
                                 DataColumn(label: Text('Date')),
@@ -167,14 +187,31 @@ class _HomeScreenState extends State<HomeScreen> {
                                 DataColumn(label: Text('Amount')),
                                 DataColumn(label: Text('Purpose')),
                               ],
-                              rows: _filteredTransactions.map((transaction) {
-                                return DataRow(cells: [
-                                  DataCell(Text(transaction['created_at'].toString().substring(0, 10))),
-                                  DataCell(Text(transaction['type'])),
-                                  DataCell(Text('\RM${transaction['amount'].toStringAsFixed(2)}')),
-                                  DataCell(Text(transaction['purpose'])),
-                                ]);
-                              }).toList(),
+                              rows: [
+                                ..._filteredTransactions.map((transaction) {
+                                  return DataRow(cells: [
+                                    DataCell(Text(transaction['created_at'].toString().substring(0, 10))),
+                                    DataCell(Text(transaction['type'])),
+                                    DataCell(Text('RM${transaction['amount'].toStringAsFixed(2)}')),
+                                    DataCell(Text(transaction['purpose'])),
+                                  ]);
+                                }).toList(),
+                                // Summary row for Income - Expense
+                                DataRow(
+                                  cells: [
+                                    DataCell(Text('Summary', style: TextStyle(fontWeight: FontWeight.bold))),
+                                    DataCell(Text('Net', style: TextStyle(fontWeight: FontWeight.bold))),
+                                    DataCell(Text(
+                                      'RM${totals['net']!.toStringAsFixed(2)}',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: totals['net']! >= 0 ? Colors.green : Colors.red,
+                                      ),
+                                    )),
+                                    DataCell(Text('')),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
           ),
@@ -183,7 +220,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
 class AddTransactionScreen extends StatefulWidget {
   @override
   _AddTransactionScreenState createState() => _AddTransactionScreenState();
