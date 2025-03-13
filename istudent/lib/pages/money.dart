@@ -143,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Finance Tracker', style: TextStyle(color: Colors.white)),
+        title: const Text('My Finance', style: TextStyle(color: Colors.white)),
       ),
       body: Column(
         children: [

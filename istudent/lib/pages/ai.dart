@@ -1,8 +1,6 @@
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
-import 'package:istudent/pages/home.dart';
-import 'package:istudent/pages/bottomnav.dart';
 
 class Ai extends StatefulWidget {
   const Ai({super.key});
@@ -22,7 +20,7 @@ class _AiState extends State<Ai> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('AI Chat' , style: TextStyle(color: Colors.white)),
+        title: const Text('My AI' , style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.black,
 
         

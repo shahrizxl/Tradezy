@@ -10,7 +10,7 @@ class HealthPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Health Management', style: TextStyle(color: Colors.white)),
+        title: const Text('My Health', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.black,
 
       ),

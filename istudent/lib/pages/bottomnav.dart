@@ -21,7 +21,7 @@ class _BottomNavState extends State<BottomNav> {
     const Ai(),
     FinanceApp(),
     const HealthPage(),
-    const EduPage(),
+    const EduNavPage(),
   ];
 
   @override

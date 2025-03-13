@@ -21,6 +21,7 @@ class _HomeState extends State<Home> {
   double? _totalMoney; // Income - Expenses
   bool _isLoading = true;
   String? _errorMessage;
+  bool _hasSchedule = false; // To track if the user has a schedule
 
   final List<Map<String, String>> images = [
     {"url": "images/barcamp.png", "link": "https://www.instagram.com/barcamp_cyberjaya/"},
@@ -44,6 +45,7 @@ class _HomeState extends State<Home> {
     super.initState();
     fetchUserName();
     fetchTotalMoney();
+    fetchScheduleStatus(); // Fetch schedule status on init
   }
 
   Future<void> fetchUserName() async {
@@ -89,7 +91,7 @@ class _HomeState extends State<Home> {
           .from('transactions')
           .select('amount, type')
           .eq('user_id', user.id);
-      final transactions = transactionResponse as List<Map<String, dynamic>>;
+      final transactions = transactionResponse;
 
       double totalIncome = incomes.fold(0, (sum, amount) => sum + amount);
       double transactionIncome = transactions
@@ -112,14 +114,44 @@ class _HomeState extends State<Home> {
     }
   }
 
-  String _getMoneyCondition() {
-    if (_totalMoney == null) return "Loading...";
-    return _totalMoney! > 100 ? "Good" : "Bad";
+  // Fetch whether the user has a schedule
+  Future<void> fetchScheduleStatus() async {
+    try {
+      final user = supabase.auth.currentUser;
+      if (user == null) {
+        throw Exception('You must be logged in to fetch schedule data.');
+      }
+
+      final response = await supabase
+          .from('subjects')
+          .select('id')
+          .eq('user_id', user.id)
+          .limit(1); // We only need to check if at least one exists
+
+      setState(() {
+        _hasSchedule = (response as List).isNotEmpty;
+      });
+    } catch (error) {
+      setState(() {
+        _errorMessage = 'Failed to fetch schedule status: $error';
+      });
+      print('Error fetching schedule status: $error');
+    }
   }
 
-  // Placeholder conditions for Health and Education (extend with real logic if needed)
-  String _getHealthCondition() => "Good"; // Static for now
-  String _getEducationCondition() => "Good"; // Static for now
+  String _getMoneyCondition() {
+    if (_totalMoney == null) return "Loading...";
+    return _totalMoney! > 100 ? "Good (Above RM 100)" : "Bad (Below RM 100)";
+  }
+
+  // Health condition (static for now)
+  String _getHealthCondition() => "Good"; // Placeholder
+
+  // Education condition based on schedule
+  String _getEducationCondition() {
+    if (_isLoading) return "Loading...";
+    return _hasSchedule ? "Good (Have Schedule)" : "Bad (No Schedule)";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -289,7 +321,7 @@ class _HomeState extends State<Home> {
         } else if (title == "Health") {
           Navigator.push(context, MaterialPageRoute(builder: (context) => HealthPage()));
         } else if (title == "Education") {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => EduPage()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => EduNavPage()));
         }
       },
       child: Container(
@@ -309,7 +341,9 @@ class _HomeState extends State<Home> {
             Text(
               condition,
               style: TextStyle(
-                color: condition == "Good" ? Colors.green : Colors.red,
+                color: (condition == "Good" || 
+        condition == "Good (Above RM 100)" || 
+        condition == "Good (Have Schedule)") ? Colors.green : Colors.red,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
