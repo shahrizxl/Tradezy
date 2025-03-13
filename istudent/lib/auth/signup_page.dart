@@ -19,9 +19,10 @@ class _SignupPageState extends State<SignupPage> {
   String? _selectedGender;
   
   final List<String> _institutionOptions = [
-    'Preschool',
-    'School',
-    'University'
+    'Beginner',
+    'Amateur',
+    'Advanced',
+    'Pro Trader'
   ];
   
   final List<String> _genderOptions = [
@@ -199,7 +200,7 @@ class _SignupPageState extends State<SignupPage> {
               
               // Institution dropdown
               DropdownButtonFormField<String>(
-                decoration: _inputDecoration('Institution'),
+                decoration: _inputDecoration('Trading Experience'),
                 value: _selectedInstitution,
                 style: const TextStyle(color: Colors.white),
                 dropdownColor: Colors.grey[900],
@@ -214,7 +215,7 @@ class _SignupPageState extends State<SignupPage> {
                     _selectedInstitution = newValue;
                   });
                 },
-                validator: (value) => value == null ? 'Please select an institution' : null,
+                validator: (value) => value == null ? 'Please select an experience' : null,
               ),
               const SizedBox(height: 16),
               
