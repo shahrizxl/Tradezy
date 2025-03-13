@@ -10,12 +10,12 @@ class HealthPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('My Health', style: TextStyle(color: Colors.white)),
+        title: const Text('Learn', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.black,
 
       ),
       backgroundColor: Colors.black,
-      body: const Center(child: Text("Health Page")),
+      body: const Center(child: Text("Trade")),
     );
   }
 }
