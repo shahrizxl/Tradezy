@@ -15,25 +15,105 @@ class _AiState extends State<Ai> {
   final currentUser = ChatUser(id: "0", firstName: "User");
   final geminiUser = ChatUser(id: "1", firstName: "Istudent AI");
 
+  // Helper function to format the AI response
+  String formatAIResponse(String response) {
+    // Replace Markdown bold (**text**) with plain text bold (e.g., "Set SMART goals:")
+    response = response.replaceAllMapped(
+      RegExp(r'\*\*(.*?)\*\*'),
+      (match) => '${match[1]}:', // Add a colon to make it look like a heading
+    );
+
+    // Replace bullet points (* text) with a dash and newline for better readability
+    response = response.replaceAllMapped(
+      RegExp(r'\* (.*?)(?:\n|$)'),
+      (match) => '- ${match[1]}\n',
+    );
+
+    return response.trim();
+  }
+
+  // Custom text builder to apply formatting to the message text
+  Widget textBuilder(ChatMessage message, ChatMessage? previousMessage, ChatMessage? nextMessage) {
+    // Split the message into lines
+    final lines = message.text.split('\n');
+    final textWidgets = <Widget>[];
+
+    for (var line in lines) {
+      if (line.endsWith(':')) {
+        // Treat lines ending with ':' as headings (from bolded text)
+        textWidgets.add(
+          Text(
+            line,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+        );
+      } else {
+        // Treat other lines as regular text (e.g., bullet points)
+        textWidgets.add(
+          Text(
+            line,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+            ),
+          ),
+        );
+      }
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: textWidgets,
+    );
+  }
+
+  // Custom message decoration builder to style the message container
+  BoxDecoration messageDecorationBuilder(ChatMessage message, ChatMessage? previousMessage, ChatMessage? nextMessage) {
+    return BoxDecoration(
+      color: message.user == currentUser ? Colors.blueAccent : Colors.grey[800],
+      borderRadius: BorderRadius.circular(12),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('My AI' , style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.black,
-
-        
+        title: const Text(
+          'My AI',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.grey[900],
+        elevation: 0,
       ),
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.grey[900],
       body: DashChat(
         currentUser: currentUser,
         onSend: _handleSendMessage,
         messages: messages,
-        messageOptions: const MessageOptions(
-          currentUserContainerColor: Colors.blueAccent,
-          containerColor: Colors.grey,
-          textColor: Colors.black,
+        messageOptions: MessageOptions(
+          showTime: true,
+          timeTextColor: Colors.grey,
+          messageTextBuilder: textBuilder, // Use textBuilder to customize text rendering
+          messageDecorationBuilder: messageDecorationBuilder, // Use messageDecorationBuilder for container styling
+        ),
+        inputOptions: InputOptions(
+          inputDecoration: InputDecoration(
+            hintText: 'Type your message...',
+            hintStyle: const TextStyle(color: Colors.grey),
+            filled: true,
+            fillColor: Colors.grey[800],
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+          ),
+          inputTextStyle: const TextStyle(color: Colors.white),
         ),
       ),
     );
@@ -46,22 +126,38 @@ class _AiState extends State<Ai> {
 
     try {
       final config = GenerationConfig(
-        temperature: 0.7,
-        topP: 1,
-        topK: 1,
+        temperature: 0.9,
+        topP: 0.95,
+        topK: 40,
         maxOutputTokens: 2048,
       );
 
-      final response = await gemini.text(message.text, generationConfig: config);
-      
+      final prompt =
+          "You are Istudent AI, a helpful assistant for trader. Provide detailed and conversational responses. User's message: ${message.text}";
+
+      final response = await gemini.text(prompt, generationConfig: config);
+
       if (response?.output != null) {
+        final formattedResponse = formatAIResponse(response!.output.toString());
+
         setState(() {
           messages.insert(
             0,
             ChatMessage(
               user: geminiUser,
               createdAt: DateTime.now(),
-              text: response!.output.toString(),
+              text: formattedResponse,
+            ),
+          );
+        });
+      } else {
+        setState(() {
+          messages.insert(
+            0,
+            ChatMessage(
+              user: geminiUser,
+              createdAt: DateTime.now(),
+              text: "Sorry, I couldn't generate a response. Please try again.",
             ),
           );
         });

@@ -113,7 +113,7 @@ class _FeedState extends State<Feed> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Post created successfully!')),
+          const SnackBar(content: Text('Chat sent successfully!')),
         );
       }
     } catch (error) {

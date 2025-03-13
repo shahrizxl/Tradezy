@@ -629,7 +629,7 @@ class _SavingsScreenState extends State<SavingsScreen> {
       'MIGA (30%)': savings * 0.3,
       'ASNB (20%)': savings * 0.2,
       'Wahed (20%)': savings * 0.2,
-      'Luno (20%)': savings * 0.2,
+      'Keep for Trading (30%)': savings * 0.3, 
     };
   }
 
@@ -648,11 +648,6 @@ class _SavingsScreenState extends State<SavingsScreen> {
       'image': 'images/wahed.jpg',
       'link': 'https://play.google.com/store/apps/details?id=com.wahed.mobile&hl=en',
       'displayLink': 'Wahed App Link',
-    },
-    'Luno': {
-      'image': 'images/luno.jpeg',
-      'link': 'https://play.google.com/store/apps/details?id=co.bitx.android.wallet&hl=en',
-      'displayLink': 'Luno App Link',
     },
   };
 
@@ -676,7 +671,6 @@ class _SavingsScreenState extends State<SavingsScreen> {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => FinanceApp()));
-
           },
         ),
       ),
@@ -734,62 +728,95 @@ class _SavingsScreenState extends State<SavingsScreen> {
                       ),
                       const SizedBox(height: 8),
                       const Text(
-                        'Here’s how you could allocate 90% of your savings:',
+                        'Here’s how you could allocate your savings:',
                         style: TextStyle(fontSize: 16),
                       ),
                       const SizedBox(height: 16),
                       ..._calculateAllocations(_savings!).entries.map((entry) {
                         final platformKey = entry.key.split(' ')[0];
-                        final platform = _platforms[platformKey]!;
-                        return Card(
-                          elevation: 2,
-                          margin: const EdgeInsets.symmetric(vertical: 8),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Row(
-                              children: [
-                                Image.asset(
-                                  platform['image']!,
-                                  width: 50,
-                                  height: 50,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      const Icon(Icons.error, size: 50),
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        entry.key,
-                                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        'RM${entry.value.toStringAsFixed(2)}',
-                                        style: const TextStyle(fontSize: 16),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () => _launchURL(platform['link']!),
-                                        child: Text(
-                                          platform['displayLink']!,
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.blue,
-                                            decoration: TextDecoration.underline,
+                        if (platformKey == 'Keep') {
+                          // Special case for "Keep in Cash"
+                          return Card(
+                            elevation: 2,
+                            margin: const EdgeInsets.symmetric(vertical: 8),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.account_balance_wallet, size: 50, color: Colors.grey),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          entry.key,
+                                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          'RM${entry.value.toStringAsFixed(2)}',
+                                          style: const TextStyle(fontSize: 16),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        } else {
+                          // Regular platform with image and link
+                          final platform = _platforms[platformKey]!;
+                          return Card(
+                            elevation: 2,
+                            margin: const EdgeInsets.symmetric(vertical: 8),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Row(
+                                children: [
+                                  Image.asset(
+                                    platform['image']!,
+                                    width: 50,
+                                    height: 50,
+                                    errorBuilder: (context, error, stackTrace) =>
+                                        const Icon(Icons.error, size: 50),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          entry.key,
+                                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          'RM${entry.value.toStringAsFixed(2)}',
+                                          style: const TextStyle(fontSize: 16),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () => _launchURL(platform['link']!),
+                                          child: Text(
+                                            platform['displayLink']!,
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.blue,
+                                              decoration: TextDecoration.underline,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        );
+                          );
+                        }
                       }).toList(),
                       const SizedBox(height: 16),
                       const Text(
-                        'Note: The remaining 10% of your savings can be kept as cash or allocated based on your goals.',
+                        'Note: The remaining 30% of your savings can be kept as cash or allocated based on your goals.',
                         style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
                       ),
                     ],
