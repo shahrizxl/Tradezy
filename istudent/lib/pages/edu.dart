@@ -24,7 +24,7 @@ class _EduNavPageState extends State<EduNavPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Traders chat & note', style: TextStyle(color: Colors.white)),
+        title: const Text('Trader chats & notes', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.black,
       ),
       body: _screens[_selectedIndex],

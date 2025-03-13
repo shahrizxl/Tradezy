@@ -301,9 +301,6 @@ class _HomeState extends State<Home> {
                 children: [
                   _buildConditionBox("Money", _getMoneyCondition(), Colors.blueAccent),
                   const SizedBox(height: 10),
-                  _buildConditionBox("Health", _getHealthCondition(), Colors.green),
-                  const SizedBox(height: 10),
-                  _buildConditionBox("Education", _getEducationCondition(), Colors.orange),
                 ],
               ),
             ),
@@ -318,11 +315,7 @@ class _HomeState extends State<Home> {
       onTap: () {
         if (title == "Money") {
           Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
-        } else if (title == "Health") {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => HealthPage()));
-        } else if (title == "Education") {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => EduNavPage()));
-        }
+        } 
       },
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -341,9 +334,7 @@ class _HomeState extends State<Home> {
             Text(
               condition,
               style: TextStyle(
-                color: (condition == "Good" || 
-        condition == "Good (Above RM 100)" || 
-        condition == "Good (Have Schedule)") ? Colors.green : Colors.red,
+                color: (condition == "Good (Above RM 100)" ) ? Colors.green : Colors.red,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
