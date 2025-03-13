@@ -18,10 +18,10 @@ class _BottomNavState extends State<BottomNav> {
 
   final List<Widget> pages = [
     const Home(),
-    const Ai(),
     FinanceApp(),
     const HealthPage(),
     const EduNavPage(),
+    const Ai(),
   ];
 
   @override
@@ -34,10 +34,11 @@ class _BottomNavState extends State<BottomNav> {
         animationDuration: const Duration(milliseconds: 500),
         items: const [
           Icon(Icons.home, size: 30),
-          Icon(Icons.chat, size: 30),
           Icon(Icons.money, size: 30),
-          Icon(Icons.local_hospital, size: 30),
           Icon(Icons.school, size: 30),
+          Icon(Icons.chat, size: 30),
+          Icon(Icons.android, size: 30),
+
         ],
         onTap: (index) {
           setState(() {

@@ -816,7 +816,7 @@ class _SavingsScreenState extends State<SavingsScreen> {
                       }).toList(),
                       const SizedBox(height: 16),
                       const Text(
-                        'Note: The remaining 30% of your savings can be kept as cash or allocated based on your goals.',
+                        'Note: The remaining 30% of your savings can be kept as cash or allocated based on your goals in trading.',
                         style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
                       ),
                     ],
