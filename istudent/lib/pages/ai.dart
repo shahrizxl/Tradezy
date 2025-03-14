@@ -32,15 +32,12 @@ class _AiState extends State<Ai> {
     return response.trim();
   }
 
-  // Custom text builder to apply formatting to the message text
   Widget textBuilder(ChatMessage message, ChatMessage? previousMessage, ChatMessage? nextMessage) {
-    // Split the message into lines
     final lines = message.text.split('\n');
     final textWidgets = <Widget>[];
 
     for (var line in lines) {
       if (line.endsWith(':')) {
-        // Treat lines ending with ':' as headings (from bolded text)
         textWidgets.add(
           Text(
             line,
@@ -52,7 +49,6 @@ class _AiState extends State<Ai> {
           ),
         );
       } else {
-        // Treat other lines as regular text (e.g., bullet points)
         textWidgets.add(
           Text(
             line,

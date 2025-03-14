@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:istudent/pages/notes.dart'; // Make sure this path is correct
-import 'package:istudent/pages/feed.dart'; // Add this import
+import 'package:istudent/pages/news.dart';
+import 'package:istudent/pages/notes.dart'; 
+import 'package:istudent/pages/feed.dart'; 
+import 'package:istudent/pages/news.dart';
 
 class EduNavPage extends StatefulWidget {
   const EduNavPage({super.key});
@@ -11,7 +13,7 @@ class EduNavPage extends StatefulWidget {
 
 class _EduNavPageState extends State<EduNavPage> {
   int _selectedIndex = 0;
-  final List<Widget> _screens = [const Feed(), const NotesPage()];
+  final List<Widget> _screens = [const Feed(), const NotesPage(),const Newspage()];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -37,6 +39,7 @@ class _EduNavPageState extends State<EduNavPage> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.feed), label: 'Traders chat'),
           BottomNavigationBarItem(icon: Icon(Icons.note), label: 'Notes'),
+          BottomNavigationBarItem(icon: Icon(Icons.newspaper), label: 'News'),
         ],
       ),
     );
