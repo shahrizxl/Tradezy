@@ -6,6 +6,7 @@ import 'package:istudent/pages/money.dart';
 import 'package:istudent/pages/edu.dart';
 import 'package:istudent/pages/health.dart';
 import 'package:istudent/pages/profile.dart';
+import 'package:istudent/pages/news.dart'; // Import Newspage
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -21,7 +22,7 @@ class _HomeState extends State<Home> {
   double? _totalMoney; // Income - Expenses
   bool _isLoading = true;
   String? _errorMessage;
-  bool _hasSchedule = false; // To track if the user has a schedule
+  bool _hasNotes = false; // To track if the user has notes
 
   final List<Map<String, String>> images = [
     {"url": "images/barcamp.png", "link": "https://www.instagram.com/barcamp_cyberjaya/"},
@@ -45,7 +46,7 @@ class _HomeState extends State<Home> {
     super.initState();
     fetchUserName();
     fetchTotalMoney();
-    fetchScheduleStatus(); // Fetch schedule status on init
+    fetchNotesStatus(); // Fetch notes status on init
   }
 
   Future<void> fetchUserName() async {
@@ -114,43 +115,39 @@ class _HomeState extends State<Home> {
     }
   }
 
-  // Fetch whether the user has a schedule
-  Future<void> fetchScheduleStatus() async {
+  Future<void> fetchNotesStatus() async {
     try {
       final user = supabase.auth.currentUser;
       if (user == null) {
-        throw Exception('You must be logged in to fetch schedule data.');
+        throw Exception('You must be logged in to fetch notes data.');
       }
 
       final response = await supabase
-          .from('subjects')
+          .from('notes')
           .select('id')
           .eq('user_id', user.id)
-          .limit(1); // We only need to check if at least one exists
+          .limit(1);
 
       setState(() {
-        _hasSchedule = (response as List).isNotEmpty;
+        _hasNotes = (response as List).isNotEmpty;
       });
     } catch (error) {
       setState(() {
-        _errorMessage = 'Failed to fetch schedule status: $error';
+        _errorMessage = 'Failed to fetch notes status: $error';
       });
-      print('Error fetching schedule status: $error');
+      print('Error fetching notes status: $error');
     }
   }
 
   String _getMoneyCondition() {
     if (_totalMoney == null) return "Loading...";
-    return _totalMoney! > 100 ? "Good (Above RM 100)" : "Bad (Below RM 100)";
+    return _totalMoney! > 100 ? "Above RM 100" : "Below RM 100";
   }
 
-  // Health condition (static for now)
-  String _getHealthCondition() => "Good"; // Placeholder
 
-  // Education condition based on schedule
-  String _getEducationCondition() {
+  String _getNotesCondition() {
     if (_isLoading) return "Loading...";
-    return _hasSchedule ? "Good (Have Schedule)" : "Bad (No Schedule)";
+    return _hasNotes ? "Notes Available" : "No Notes";
   }
 
   @override
@@ -295,12 +292,45 @@ class _HomeState extends State<Home> {
               ),
             ),
             const SizedBox(height: 30),
-            // Three vertical boxes for Money, Health, Education
+            // Three vertical boxes for Money, News, Notes
             Expanded(
               child: Column(
                 children: [
-                  _buildConditionBox("Money", _getMoneyCondition(), Colors.blueAccent),
+                  _buildConditionBox(
+                    "Money",
+                    _getMoneyCondition(),
+                    Colors.blueAccent,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                      );
+                    },
+                  ),
                   const SizedBox(height: 10),
+                  _buildConditionBox(
+                    "News",
+                    "View Latest Updates",
+                    Colors.orangeAccent,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const Newspage()),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  _buildConditionBox(
+                    "Notes",
+                    _getNotesCondition(),
+                    Colors.purpleAccent,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const EduNavPage()),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
@@ -310,13 +340,9 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget _buildConditionBox(String title, String condition, Color color) {
+  Widget _buildConditionBox(String title, String condition, Color color, {VoidCallback? onTap}) {
     return GestureDetector(
-      onTap: () {
-        if (title == "Money") {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
-        } 
-      },
+      onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -334,7 +360,7 @@ class _HomeState extends State<Home> {
             Text(
               condition,
               style: TextStyle(
-                color: (condition == "Good (Above RM 100)" ) ? Colors.green : Colors.red,
+                color: condition.contains("Above")||condition.contains("Available") ? Colors.green : condition.contains("Below") ||condition.contains("No")? Colors.red : Colors.white,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
