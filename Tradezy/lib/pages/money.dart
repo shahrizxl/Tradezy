@@ -33,7 +33,7 @@ class _FinanceAppState extends State<FinanceApp> {
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
           items: [
-            BottomNavigationBarItem(icon: Icon(Icons.account_balance), label: 'Bank'),
+            BottomNavigationBarItem(icon: Icon(Icons.account_balance), label: 'Summary'),
             BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Add'),
             BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Stats'),
             BottomNavigationBarItem(icon: Icon(Icons.trending_up), label: 'Invest'),
