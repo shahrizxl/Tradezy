@@ -1,19 +1,45 @@
-Tradezy:
+# Tradezy 📈💸
 
-to run the project:
-type in terminal:
+**Tradezy** is an AI-powered personal finance and trading education app designed to help users track income and expenses, apply the 50/30/20 budgeting rule, explore investment options, and learn trading strategies — all in one place!
 
+---
+
+## 🚀 Getting Started
+
+To run the project locally, follow these steps:
+
+```bash
+# Step 1: Navigate to the project directory
 cd Tradezy
 
-then:
-
+# Step 2: Run the app
 flutter run
 
-after that:
+✅ Features
+💰 Income & Expense Tracking
 
-you may choose where to run the project:
+📊 50/30/20 Rule Auto-Categorization
 
-either in website or phone device 
-by choosing number provided in terminal
+💡 AI Investment Suggestions
 
-thank you for using Tradezy
+📉 Virtual Trading with Selected Stocks
+
+📖 Trade Notes & News Feed
+
+🤖 AI Chat Assistant for Trading Queries
+
+💬 Community Chat for Peer Learning
+
+
+🛠️ Tech Stack
+Flutter — Frontend
+
+Supabase — Database for transactions
+
+Machine Learning & AI — For personalized suggestions and trading assistant
+
+🙌 Thank You
+Thank you for trying out Tradezy!
+We hope this app empowers you to take control of your finances and grow your trading knowledge.
+Feel free to contribute or reach out for feedback. Happy trading!
+
