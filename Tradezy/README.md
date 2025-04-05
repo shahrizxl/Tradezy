@@ -15,3 +15,5 @@ you may choose where to run the project:
 
 either in website or phone device 
 by choosing number provided in terminal
+
+thank you for using Tradezy
