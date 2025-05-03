@@ -1,8 +1,5 @@
 # Tradezy
 
-<p align="center">
-  <img src="Tradezy/images/Tradezy.png" alt="Tradezy Logo" width="300">
-</p>
 
 <h3 align="center">Tradezy</h3>
 <p align="center">
